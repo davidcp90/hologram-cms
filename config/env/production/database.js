@@ -1,18 +1,19 @@
-const path = require("path");
+const { parse } = require("pg-connection-string");
 
-module.exports = ({ env }) => ({
-  connection: {
-    client: "postgres",
+module.exports = ({ env }) => {
+  const { host, port, database, user, password } = parse(env("DATABASE_URL"));
+
+  return {
     connection: {
-      host: env("BIT_PG_HOST"),
-      port: env.int("BIT_PG_PORT"),
-      database: env("BIT_PG_NAME"),
-      user: env("BIT_PG_USER"),
-      password: env("BIT_PG_PSSWD"),
-      ssl: {
-        rejectUnauthorized: env.bool("BIT_PG_SSL_SELF"), // For self-signed certificates
+      client: "postgres",
+      connection: {
+        host,
+        port,
+        database,
+        user,
+        password
       },
+      debug: false,
     },
-    debug: false,
-  },
-});
+  };
+};
